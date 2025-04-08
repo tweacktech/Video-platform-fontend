@@ -1,10 +1,9 @@
-
 <script setup lang="ts">
 import { ref, computed, onMounted, watch } from 'vue'
 import axios from 'axios'
 import { useVideosStore } from '../stores/videos'
 import VideoCard from '../components/VideoCard.vue'
-
+import { API_BASE_URL } from '../config'
 
 const videoStore = useVideosStore()
 const categories = ref([])
@@ -14,11 +13,6 @@ const videos = computed(() => videoStore.videos)
 const loading = computed(() => videoStore.loading)
 const currentPage = computed(() => videoStore.pagination.current_page)
 const totalPages = computed(() => Math.ceil(videoStore.pagination.total / videoStore.pagination.per_page))
-
-// Access data
-// console.log('tes',videos)
-// console.log('tess',videoStore.currentPage)
-// console.log(videoStore.totalPages)
 
 // Featured videos filtering
 const featuredVideos = computed(() => {
@@ -64,30 +58,27 @@ const paginationButtons = computed(() => {
 // Methods
 const fetchCategories = async () => {
   try {
-    const response = await axios.get('http://127.0.0.1:8000/api/categories')
-    // console.log('Categories:', response.data)
+    const response = await axios.get(`${API_BASE_URL}/categories`)
     categories.value = response.data.data
   } catch (error) {
     console.error('Failed to fetch categories', error)
   }
 }
 
-
 // Fetch videos and categories on mount
 onMounted(async () => {
-  fetchCategories()
-  videoStore.fetchVideos()
+  await fetchCategories()
+  await videoStore.fetchVideos()
 })
-
 
 // Watch for category changes
-watch(() => selectedCategory.value, (newValue) => {
-  videoStore.setFilter({ category_id: newValue })
+watch(selectedCategory, (newCategory) => {
+  videoStore.updateFilters({ category_id: newCategory })
+  videoStore.fetchVideos() // Trigger a new fetch when category changes
 })
 
-
 const selectCategory = (categoryId) => {
-  selectedCategory.value = categoryId
+  selectedCategory.value = categoryId === selectedCategory.value ? null : categoryId
 }
 
 const changePage = (page) => {
@@ -149,7 +140,6 @@ const changePage = (page) => {
             :key="video.id" 
             :video="video" 
           />
-           
         </div>
       </template>
     </section>
@@ -183,7 +173,6 @@ const changePage = (page) => {
     </div>
   </div>
 </template>
-
 
 <style scoped>
 .home-page {
@@ -234,6 +223,10 @@ const changePage = (page) => {
   transition: all 0.2s ease;
 }
 
+.category-btn:hover {
+  background: #e0e0e0;
+}
+
 .category-btn.active {
   background: #e94560;
   color: white;
@@ -279,6 +272,10 @@ const changePage = (page) => {
   border-radius: 4px;
 }
 
+.page-btn:hover:not(:disabled) {
+  background: #f0f0f0;
+}
+
 .page-btn.active {
   background: #e94560;
   color: white;
@@ -306,6 +303,15 @@ const changePage = (page) => {
   
   .videos-grid {
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  }
+  
+  .categories {
+    gap: 0.3rem;
+  }
+  
+  .category-btn {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.9rem;
   }
 }
 </style>

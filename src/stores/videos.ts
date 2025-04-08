@@ -139,7 +139,7 @@ export const useVideosStore = defineStore('videos', {
       return this.fetchVideos()
     },
 
-    setPage(page: number) {
+    setPage(page: number) { 
       if (page >= 1 && page <= this.pagination.last_page) {
         this.pagination.current_page = page
         return this.fetchVideos()
