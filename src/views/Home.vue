@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, watch } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import axios from 'axios'
 import { useVideosStore } from '../stores/videos'
 import VideoCard from '../components/VideoCard.vue'
@@ -65,29 +65,34 @@ const fetchCategories = async () => {
   }
 }
 
-// Fetch videos and categories on mount
-onMounted(async () => {
-  await fetchCategories()
-  await videoStore.fetchVideos()
-})
-
-// Watch for category changes
-watch(selectedCategory, (newCategory) => {
-  videoStore.updateFilters({ category_id: newCategory })
-  videoStore.fetchVideos() // Trigger a new fetch when category changes
-})
-
-const selectCategory = (categoryId) => {
-  selectedCategory.value = categoryId === selectedCategory.value ? null : categoryId
+const loadVideos = async () => {
+  await videoStore.fetchVideos({
+    category_id: selectedCategory.value,
+    page: currentPage.value
+  })
 }
 
-const changePage = (page) => {
+const selectCategory = async (categoryId: number | null) => {
+  selectedCategory.value = categoryId === selectedCategory.value ? null : categoryId
+  await videoStore.setPage(1)
+  await loadVideos()
+}
+
+const changePage = async (page: number) => {
   if (typeof page === 'number') {
-    videoStore.setPage(page)
+    await videoStore.setPage(page)
+    await loadVideos()
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 }
+
+// onMounted fetch
+onMounted(async () => {
+  await fetchCategories()
+  await loadVideos()
+})
 </script>
+
 
 <template>
   <div class="home-page">
