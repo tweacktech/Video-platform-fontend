@@ -91,34 +91,3 @@ const navigateToVideo = () => {
   router.push({ name: 'VideoDetail', params: { id: props.video.id } });
 };
 </script>
-
-<style scoped>
-.video-card {
-  border-radius: 2%;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-.video-card:hover {
-  box-shadow: 0 8px 16px rgba(62, 30, 30, 0.3);
-}
-
-.video-card:focus {
-  outline: 2px solid #3b82f6;
-  outline-offset: 2px;
-}
-
-img {
-  transition: opacity 0.3s ease;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.video-card:hover .opacity-0 {
-  opacity: 1 !important;
-}
-
-.video-card:hover img {
-  opacity: 1 !important;
-}
-</style>

@@ -1,37 +1,23 @@
 <template>
-  <div class="upload-page max-w-2xl mx-auto p-6">
-    <h1 class="text-2xl font-bold mb-6">Upload Video</h1>
-    <form @submit.prevent="uploadVideo" enctype="multipart/form-data" class="space-y-4">
+  <div class="upload-page">
+    <h1 class="form-title">Upload Your Video</h1>
+    <form @submit.prevent="uploadVideo" enctype="multipart/form-data" class="upload-form">
       <!-- Title -->
-      <div>
-        <label class="block mb-1 font-medium">Title</label>
-        <input
-          v-model="form.title"
-          type="text"
-          placeholder="Video Title"
-          required
-          class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
+      <div class="form-group">
+        <label>Title</label>
+        <input v-model="form.title" type="text" placeholder="Enter video title" required />
       </div>
 
       <!-- Description -->
-      <div>
-        <label class="block mb-1 font-medium">Description</label>
-        <textarea
-          v-model="form.description"
-          placeholder="Video Description"
-          class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-        ></textarea>
+      <div class="form-group">
+        <label>Description</label>
+        <textarea v-model="form.description" placeholder="Write a short description..."></textarea>
       </div>
 
       <!-- Category -->
-      <div>
-        <label class="block mb-1 font-medium">Category</label>
-        <select
-          v-model="form.category_id"
-          required
-          class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-        >
+      <div class="form-group">
+        <label>Category</label>
+        <select v-model="form.category_id" required>
           <option value="" disabled>Select a category</option>
           <option v-for="category in categories" :key="category.id" :value="category.id">
             {{ category.name }}
@@ -40,46 +26,25 @@
       </div>
 
       <!-- Duration -->
-      <div>
-        <label class="block mb-1 font-medium">Duration (seconds)</label>
-        <input
-          v-model.number="form.duration"
-          type="number"
-          min="1"
-          placeholder="Duration in seconds"
-          required
-          class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
+      <div class="form-group">
+        <label>Duration (seconds)</label>
+        <input v-model.number="form.duration" type="number" min="1" placeholder="Enter duration" required />
       </div>
 
       <!-- Video File -->
-      <div>
-        <label class="block mb-1 font-medium">Video File</label>
-        <input
-          @change="onVideoChange"
-          type="file"
-          accept="video/*"
-          required
-          class="w-full"
-        />
+      <div class="form-group">
+        <label>Video File</label>
+        <input @change="onVideoChange" type="file" accept="video/*" required />
       </div>
 
       <!-- Thumbnail File -->
-      <div>
-        <label class="block mb-1 font-medium">Thumbnail Image</label>
-        <input
-          @change="onThumbnailChange"
-          type="file"
-          accept="image/*"
-          class="w-full"
-        />
+      <div class="form-group">
+        <label>Thumbnail Image</label>
+        <input @change="onThumbnailChange" type="file" accept="image/*" />
       </div>
 
-      <button
-        type="submit"
-        class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors"
-        :disabled="isUploading"
-      >
+      <!-- Submit Button -->
+      <button type="submit" :disabled="isUploading">
         {{ isUploading ? 'Uploading...' : 'Upload Video' }}
       </button>
     </form>
@@ -131,7 +96,7 @@ const uploadVideo = async () => {
   formData.append('category_id', form.value.category_id)
   formData.append('duration', form.value.duration)
   formData.append('video_file', videoFile.value)
-  
+
   if (thumbnailFile.value) {
     formData.append('thumbnail', thumbnailFile.value)
   }
@@ -169,19 +134,71 @@ onMounted(fetchCategories)
 
 <style scoped>
 .upload-page {
-  background-color: #f8fafc;
+  max-width: 700px;
+  margin: 3rem auto;
+  background: #fff;
+  padding: 2rem;
   border-radius: 0.5rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
-input[type="file"] {
-  border: 1px solid #e2e8f0;
-  padding: 0.5rem;
+.form-title {
+  text-align: center;
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 1.5rem;
+}
+
+.upload-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.form-group label {
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  display: block;
+  color: #444;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ccc;
   border-radius: 0.375rem;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+  border-color: #3b82f6;
+}
+
+button {
+  padding: 0.75rem;
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+button:hover {
+  background-color: #1e40af;
 }
 
 button:disabled {
-  opacity: 0.7;
+  background-color: #93c5fd;
   cursor: not-allowed;
 }
 </style>

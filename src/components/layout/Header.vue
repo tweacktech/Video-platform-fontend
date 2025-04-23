@@ -39,17 +39,8 @@ onMounted(() => {
   }
 });
 
-const handleSearch = (): void => {
-  const query = searchQuery.value.trim();
-  if (query) {
-    router.push({
-      name: 'home',
-      query: { search: query }
-    });
-    searchQuery.value = '';
-    reloadPage();
-  }
-};
+
+
 
 const logout = async (): Promise<void> => {
   try {
@@ -63,90 +54,33 @@ const logout = async (): Promise<void> => {
 };
 </script>
 
-<style scoped>
-
-.header {
-  background-color: #1a1a2e;
-  color: white;
-  padding: 1rem;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-}
-
-.nav-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-.logo a {
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: white;
-  text-decoration: none;
-}
-
-.search-bar {
-  display: flex;
-  flex: 1;
-  max-width: 500px;
-  margin: 0 2rem;
-}
-
-.search-bar input {
-  flex: 1;
-  padding: 0.5rem 1rem;
-  border: none;
-  border-radius: 4px 0 0 4px;
-}
-
-.search-bar button {
-  padding: 0.5rem 1rem;
-  background: #e94560;
-  border: none;
-  border-radius: 0 4px 4px 0;
-  cursor: pointer;
-}
-
-.nav-links {
-  display: flex;
-  gap: 1rem;
-  align-items: center;
-}
-
-.nav-links a {
-  color: white;
-  text-decoration: none;
-}
-</style>
 <template>
- <header class="header">
-      <nav class="nav-container">
-        <div class="logo">
-          <router-link to="/">Videos</router-link>
+
+<div class="header">
+      <h2 class="header-text">Download & Watch Free Movies</h2>
+      
+    </div>
+
+    <!-- Navigation Tabs -->
+    <div class="navigation">
+      <div class="nav-container">
+        <div class="logo-circle">
+          <span> <router-link to="/">+</router-link></span>
         </div>
-        <div class="search-bar">
-          <input 
-            type="text" 
-            placeholder="Search videos..." 
-            v-model="searchQuery" 
-            @keyup.enter="handleSearch" 
-          />
-          <button @click="handleSearch">
-            <span class="icon">🔍</span>
-          </button>
-        </div>
-        <div class="nav-links">
-          <router-link to="/">Home</router-link>
-          <template v-if="isLoggedIn">
-            <router-link to="/upload">Upload</router-link>
-            <button @click="logout" class="logout-btn">Logout</button>
-          </template>
-          <router-link v-else to="/login">Login</router-link>
-        </div>
-      </nav>
-    </header>
+        <nav class="nav-tabs">
+          
+          <div class="nav-item">
+            <router-link to="/" class="nav-item">Home</router-link>
+            <router-link to="/test" class="nav-item" >Test</router-link> 
+            <template v-if="isLoggedIn">
+              <router-link to="/upload" class="nav-item">Upload</router-link>
+              <button @click="logout" class="logout-btn">Logout</button>
+            </template>
+            <router-link v-else to="/login">Login</router-link>
+          </div>
+         
+        </nav>
+      </div>
+    </div>
+
 </template>
